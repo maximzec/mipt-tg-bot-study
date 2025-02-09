@@ -1,11 +1,10 @@
 import sqlite3
 from datetime import datetime
 
+
 # Имя файла базы данных
-DB_NAME = 'budget.db'
 
-
-def create_tables():
+def create_tables(DB_NAME):
     """Создает таблицы в базе данных, если они не существуют."""
     with sqlite3.connect(DB_NAME) as conn:
         cursor = conn.cursor()
@@ -22,7 +21,7 @@ def create_tables():
         conn.commit()
 
 
-def insert_record(telegram_id, record_type, amount, category, date=None):
+def insert_record(DB_NAME, telegram_id, record_type, amount, category, date=None):
     """Вставляет запись в таблицу RECORD"""
     if date is None:
         date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -36,7 +35,7 @@ def insert_record(telegram_id, record_type, amount, category, date=None):
         conn.commit()
 
 
-def get_unique_categories(telegram_id):
+def get_unique_categories(DB_NAME, telegram_id):
     """Возвращает список уникальных категорий для указанного пользователя."""
     with sqlite3.connect(DB_NAME) as conn:
         cursor = conn.cursor()
@@ -48,7 +47,7 @@ def get_unique_categories(telegram_id):
     return categories
 
 
-def get_aggregated_expenses(telegram_id, start_date, end_date, categories=None):
+def get_aggregated_expenses(DB_NAME, telegram_id, start_date, end_date, categories=None):
     """Возвращает агрегированную статистику по тратам за указанный период.
 
     Если указаны категории, возвращает сумму по каждой категории.
@@ -86,7 +85,7 @@ def get_aggregated_expenses(telegram_id, start_date, end_date, categories=None):
         return {row[0]: row[1] for row in results}
 
 
-def get_all_records(telegram_id):
+def get_all_records(DB_NAME, telegram_id):
     with sqlite3.connect(DB_NAME) as conn:
         cursor = conn.cursor()
         query = '''

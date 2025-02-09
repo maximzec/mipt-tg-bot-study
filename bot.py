@@ -6,7 +6,7 @@ from database import create_tables
 
 
 router = Router()
-create_tables()
+create_tables('budget.db')
 
 # Логирование
 logging.basicConfig(
